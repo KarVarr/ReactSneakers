@@ -1,4 +1,4 @@
-export default function Header() {
+export default function Header({onClickAdd}) {
   return (
     <header>
       <div className='header__logo'>
@@ -9,7 +9,7 @@ export default function Header() {
         </div>
       </div>
       <div className='header__price'>
-        <div className='price'>
+        <div className='price' onClick={onClickAdd}>
           <img width={18} height={18} src='/img/bean.svg' alt='cart' />
           <span>1205 rub.</span>
         </div>
