@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import './card.scss';
 
 export default function Card({
@@ -11,20 +11,18 @@ export default function Card({
   const [isAdded, setIsAdded] = useState(true);
 
   const hendlePlus = () => {
+    onClickPlus({ price, imgUrl, name });
     setIsAdded(!isAdded)
   }
 
-  // useEffect(() => {
-  //   const backRed = 'blue';
-  // }, [isAdded])
-
+  
   return (
     <div className='card'>
       <div className='card__favorite' onClick={onClickFavorite}>
         <img src='/img/likeEmpty.svg' alt='likeEmpty' />
       </div>
       <div className='card__img'>
-        <img width={133} height={112} src={imgUrl} alt='sneakers photo' />
+        <img width={133} height={112} src={imgUrl} alt='sneakers?_photo' />
       </div>
 
       <p>{name}</p>

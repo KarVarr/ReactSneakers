@@ -1,6 +1,6 @@
-export default function Drawer({ onClickRemove }) {
+export default function Drawer({ onClickRemove, items = [] }) {
   return (
-    <div className='overlay'>
+    <div className='overlay' onClick={onClickRemove}>
       <div className='drawer'>
         <h2>
           Корзина
@@ -14,44 +14,22 @@ export default function Drawer({ onClickRemove }) {
         <div className='items'>
           <div className='items__flex--top'>
             {/* SNEAKERS */}
-            <div className='cart__item'>
-              <div className='item__img'>
+            {items.map((obj, index) => (
+              <div key={index} className='cart__item'>
+                <div className='item__img'>
+                  <img width={70} height={70} src={obj.imgUrl} alt='Sneakers' />
+                </div>
+                <div className='item__text'>
+                  <p>{obj.name}</p>
+                  <b>{obj.price}руб.</b>
+                </div>
                 <img
-                  width={70}
-                  height={70}
-                  src='/img/sneakers1.png'
-                  alt='Sneakers'
+                  className='remove__btn'
+                  src='/img/closeSvg.svg'
+                  alt='remove'
                 />
               </div>
-              <div className='item__text'>
-                <p>Мужские Кроссовки Nike Air Max 270</p>
-                <b>12 999 руб.</b>
-              </div>
-              <img
-                className='remove__btn'
-                src='/img/closeSvg.svg'
-                alt='remove'
-              />
-            </div>
-            <div className='cart__item'>
-              <div className='item__img'>
-                <img
-                  width={70}
-                  height={70}
-                  src='/img/sneakers1.png'
-                  alt='Sneakers'
-                />
-              </div>
-              <div className='item__text'>
-                <p>Мужские Кроссовки Nike Air Max 270</p>
-                <b>12 999 руб.</b>
-              </div>
-              <img
-                className='remove__btn'
-                src='/img/closeSvg.svg'
-                alt='remove'
-              />
-            </div>
+            ))}
           </div>
           {/* PRICE TAX */}
           <div className='items__flex--bottom'>
