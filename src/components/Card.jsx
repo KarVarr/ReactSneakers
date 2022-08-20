@@ -9,6 +9,7 @@ export default function Card({
   onClickPlus,
 }) {
   const [isAdded, setIsAdded] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(true);
 
   const hendlePlus = () => {
     onClickPlus({ price, imgUrl, name });
@@ -19,7 +20,7 @@ export default function Card({
   return (
     <div className='card'>
       <div className='card__favorite' onClick={onClickFavorite}>
-        <img src='/img/likeEmpty.svg' alt='likeEmpty' />
+        <img onClick={() => setIsFavorite(!isFavorite)} src={isFavorite ? '/img/likeEmpty.svg' : '/img/like.svg'} alt='likeEmpty' />
       </div>
       <div className='card__img'>
         <img width={133} height={112} src={imgUrl} alt='sneakers?_photo' />
