@@ -18,8 +18,8 @@ export default function Drawer({ onClickRemove, items = [], onRemove }) {
             <div className='items__flex'>
               <div className='items__flex--top'>
                 {/* SNEAKERS */}
-                {items.map((obj, index) => (
-                  <div key={index} className='cart__item'>
+                {items.map((obj) => (
+                  <div key={obj.id} className='cart__item'>
                     <div className='item__img'>
                       <img
                         width={70}

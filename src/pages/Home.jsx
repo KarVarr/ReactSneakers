@@ -9,7 +9,27 @@ export default function Home({
   onAddToFavorite,
   handleLCick,
   onChangeSearchInput,
+  cardItems,
+  added,
 }) {
+  const renderItems = () => {
+    return items
+      ?.filter(item =>
+        item.name.toLowerCase().includes(searchValue.toLowerCase())
+      )
+      .map(item => (
+        <Card
+          key={item.id}
+          name={item.name}
+          imgUrl={item.img}
+          price={item.price}
+          added={cardItems?.some(obj => +obj.id === +item.id)}
+          onFavorite={obj => onAddToFavorite(obj)}
+          onClickPlus={obj => handleLCick(obj)}
+          loading={false}
+        />
+      ));
+  };
   return (
     <div className='content'>
       <div className='content__title'>
@@ -40,20 +60,7 @@ export default function Home({
 
       <div className='content__sneakers'>
         {/* CARD HERE */}
-        {items
-          ?.filter(item =>
-            item.name.toLowerCase().includes(searchValue.toLowerCase())
-          )
-          .map(item => (
-            <Card
-              key={item.id}
-              name={item.name}
-              imgUrl={item.img}
-              price={item.price}
-              onFavorite={obj => onAddToFavorite(obj)}
-              onClickPlus={obj => handleLCick(obj)}
-            />
-          ))}
+        {renderItems()}
       </div>
     </div>
   );

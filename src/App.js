@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
-import {
-  Route,
-  Routes,
-  
-} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -29,22 +25,39 @@ export default function App() {
     //     setItems(json);
     //   });
 
-    axios.get('https://62fe734fa85c52ee4837d620.mockapi.io/items').then(res => {
-      setItems(res.data);
-    });
-    axios.get('https://62fe734fa85c52ee4837d620.mockapi.io/cart').then(res => {
-      setCardItmes(res.data);
-    });
-    axios
-      .get('https://62fe734fa85c52ee4837d620.mockapi.io/favorites')
-      .then(res => {
-        setFavorites(res.data);
-      });
+    async function fatchData() {
+      const itemsRespons = await axios.get(
+        'https://62fe734fa85c52ee4837d620.mockapi.io/items'
+      );
+      const cartRespons = await axios.get(
+        'https://62fe734fa85c52ee4837d620.mockapi.io/cart'
+      );
+      const favoritesRespons = await axios.get(
+        'https://62fe734fa85c52ee4837d620.mockapi.io/favorites'
+      );
+
+      setCardItmes(cartRespons.data);
+      setFavorites(favoritesRespons.data);
+      setItems(itemsRespons.data);
+    }
+
+    fatchData()
   }, []);
 
   const handleLCick = obj => {
-    axios.post('https://62fe734fa85c52ee4837d620.mockapi.io/cart', obj);
-    setCardItmes(prev => [...prev, obj]);
+    try {
+      if (cardItems.find(item => +item.id === +obj.id)) {
+        axios.delete(
+          `https://62fe734fa85c52ee4837d620.mockapi.io/cart/${obj.id}`
+        );
+        setCardItmes(prev => prev.filter(item => +item.id !== +obj.id));
+      } else {
+        axios.post('https://62fe734fa85c52ee4837d620.mockapi.io/cart', obj);
+        setCardItmes(prev => [...prev, obj]);
+      }
+    } catch (error) {
+      alert('Try again');
+    }
   };
 
   const removeItem = id => {
@@ -66,10 +79,9 @@ export default function App() {
         );
         setFavorites(prev => [...prev, data]);
       }
-    } catch(error) {
-      alert('Try again')
-    } 
-    
+    } catch (error) {
+      alert('Try again');
+    }
   };
   const onChangeSearchInput = e => {
     setSearchValue(e.target.value);
@@ -108,6 +120,7 @@ export default function App() {
           element={
             <Favorites
               items={favorites}
+              cardItems={cardItems}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onChangeSearchInput={onChangeSearchInput}
