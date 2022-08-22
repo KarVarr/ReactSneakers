@@ -1,0 +1,46 @@
+.content {
+  padding: 40px;
+
+  .content__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .content__search {
+      padding: 15px;
+      width: 250px;
+      height: 45px;
+      border: 1px solid #f3f3f3;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      img {
+        margin-right: 10px;
+      }
+      input {
+        font-size: 16px;
+        border: none;
+        outline: none;
+      }
+      .input__close {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+        cursor: pointer;
+        &:hover {
+          filter: drop-shadow(1px 2px 2px grey);
+        }
+        &:active {
+          filter: brightness(50%);
+        }
+      }
+    }
+  }
+  .content__sneakers {
+    margin: 100px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 40px;
+  }
+}

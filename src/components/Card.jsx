@@ -1,26 +1,35 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import './card.scss';
 
 export default function Card({
+  id,
   price,
   imgUrl,
   name,
-  onClickFavorite,
+  onFavorite,
   onClickPlus,
+  favorited = true,
 }) {
   const [isAdded, setIsAdded] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(favorited);
 
   const hendlePlus = () => {
     onClickPlus({ price, imgUrl, name });
-    setIsAdded(!isAdded)
-  }
+    setIsAdded(!isAdded);
+  };
 
-  
+  const onClickFavorite = () => {
+    onFavorite({id, price, imgUrl, name });
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <div className='card'>
       <div className='card__favorite' onClick={onClickFavorite}>
-        <img onClick={() => setIsFavorite(!isFavorite)} src={isFavorite ? '/img/likeEmpty.svg' : '/img/like.svg'} alt='likeEmpty' />
+        <img
+          src={isFavorite ? '/img/likeEmpty.svg' : '/img/like.svg'}
+          alt='likeEmpty'
+        />
       </div>
       <div className='card__img'>
         <img width={133} height={112} src={imgUrl} alt='sneakers?_photo' />

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
+import {
+  Route,
+  Routes,
+  
+} from 'react-router-dom';
 import axios from 'axios';
 import Footer from './components/Footer';
-import Card from './components/Card';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 
 export default function App() {
   const [items, setItems] = useState([]);
@@ -12,8 +18,8 @@ export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [cardOpened, setCardOpened] = useState(false);
-  // API
 
+  // API
   useEffect(() => {
     // fetch('https://62fe734fa85c52ee4837d620.mockapi.io/items')
     //   .then(res => {
@@ -29,6 +35,11 @@ export default function App() {
     axios.get('https://62fe734fa85c52ee4837d620.mockapi.io/cart').then(res => {
       setCardItmes(res.data);
     });
+    axios
+      .get('https://62fe734fa85c52ee4837d620.mockapi.io/favorites')
+      .then(res => {
+        setFavorites(res.data);
+      });
   }, []);
 
   const handleLCick = obj => {
@@ -40,10 +51,26 @@ export default function App() {
     axios.delete(`https://62fe734fa85c52ee4837d620.mockapi.io/cart/${id}`);
     setCardItmes(prev => prev.filter(item => item.id !== id));
   };
-  const onFavorite = (obj) => {
-    axios.post('https://62fe734fa85c52ee4837d620.mockapi.io/favorites', obj);
-    setFavorites(prev => [...prev, obj])
-  }
+
+  const onAddToFavorite = async obj => {
+    try {
+      if (favorites.find(favObj => favObj.id === obj.id)) {
+        axios.delete(
+          `https://62fe734fa85c52ee4837d620.mockapi.io/favorites/${obj.id}`
+        );
+        setFavorites(prev => prev.filter(item => item.id !== obj.id));
+      } else {
+        const { data } = await axios.post(
+          'https://62fe734fa85c52ee4837d620.mockapi.io/favorites',
+          obj
+        );
+        setFavorites(prev => [...prev, data]);
+      }
+    } catch(error) {
+      alert('Try again')
+    } 
+    
+  };
   const onChangeSearchInput = e => {
     setSearchValue(e.target.value);
   };
@@ -60,53 +87,36 @@ export default function App() {
       )}
       {/* HEADER  */}
       <Header onClickAdd={() => setCardOpened(true)} />
+
       {/* CONTENT */}
-      <div className='content'>
-        <div className='content__title'>
-          <h1>
-            {searchValue ? `Поиск по запросу: ${searchValue}` : `Все кроссовки`}
-          </h1>
-
-          <div className='content__search'>
-            <img src='/img/search.svg' alt='Search' />
-            <input
-              onChange={onChangeSearchInput}
-              value={searchValue}
-              type='text'
-              placeholder='Поиск...'
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <Home
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              items={items}
+              onAddToFavorite={onAddToFavorite}
+              onChangeSearchInput={onChangeSearchInput}
+              handleLCick={handleLCick}
             />
-            {searchValue && (
-              <img
-                className='input__close'
-                onClick={() => {
-                  setSearchValue('');
-                }}
-                src='/img/closeSvg.svg'
-                alt='close'
-              />
-            )}
-          </div>
-        </div>
-
-        <div className='content__sneakers'>
-          {/* CARD HERE */}
-          {items
-            .filter(item =>
-              item.name.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            .map(item => (
-              <Card
-                key={item.id}
-                name={item.name}
-                imgUrl={item.img}
-                price={item.price}
-                onClickFavorite={obj => onFavorite(obj)}
-                onClickPlus={obj => handleLCick(obj)}
-              />
-            ))}
-        </div>
-      </div>
-
+          }
+        />
+        <Route
+          path='/favorites'
+          element={
+            <Favorites
+              items={favorites}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              onChangeSearchInput={onChangeSearchInput}
+              onAddToFavorite={onAddToFavorite}
+            />
+          }
+        />
+      </Routes>
+      {/* FOOTER */}
       <Footer />
     </div>
   );
