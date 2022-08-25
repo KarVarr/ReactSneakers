@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AppContext from '../context';
 import Card from '../components/Card';
 import './home.scss';
 
@@ -10,6 +11,8 @@ export default function Favorites({
   favorited,
   onAddToFavorite,
 }) {
+  const { favorites } = useContext(AppContext);
+
   return (
     <div className='content'>
       <div className='content__title'>
@@ -37,7 +40,7 @@ export default function Favorites({
 
       <div className='content__sneakers'>
         {/* CARD HERE */}
-        {items
+        {favorites
           ?.filter(item =>
             item.name.toLowerCase().includes(searchValue.toLowerCase())
           )

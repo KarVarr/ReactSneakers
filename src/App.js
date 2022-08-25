@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import './index.scss';
 import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +7,8 @@ import Header from './components/Header';
 import Drawer from './components/Drawer';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
+import AppContext from './context';
+
 
 export default function App() {
   const [items, setItems] = useState([]);
@@ -14,6 +16,7 @@ export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [cardOpened, setCardOpened] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // API
   useEffect(() => {
@@ -26,6 +29,7 @@ export default function App() {
     //   });
 
     async function fatchData() {
+      setIsLoading(true);
       const itemsRespons = await axios.get(
         'https://62fe734fa85c52ee4837d620.mockapi.io/items'
       );
@@ -36,12 +40,14 @@ export default function App() {
         'https://62fe734fa85c52ee4837d620.mockapi.io/favorites'
       );
 
+      setIsLoading(false);
+
       setCardItmes(cartRespons.data);
       setFavorites(favoritesRespons.data);
       setItems(itemsRespons.data);
     }
 
-    fatchData()
+    fatchData();
   }, []);
 
   const handleLCick = obj => {
@@ -67,7 +73,7 @@ export default function App() {
 
   const onAddToFavorite = async obj => {
     try {
-      if (favorites.find(favObj => favObj.id === obj.id)) {
+      if (favorites.find(favObj => +favObj.id === +obj.id)) {
         axios.delete(
           `https://62fe734fa85c52ee4837d620.mockapi.io/favorites/${obj.id}`
         );
@@ -87,50 +93,58 @@ export default function App() {
     setSearchValue(e.target.value);
   };
 
-  return (
-    <div className='wrapper'>
-      {/* BEAN */}
-      {cardOpened && (
-        <Drawer
-          items={cardItems}
-          onClickRemove={() => setCardOpened(false)}
-          onRemove={removeItem}
-        />
-      )}
-      {/* HEADER  */}
-      <Header onClickAdd={() => setCardOpened(true)} />
+  const isItemAdded = (id) => {
+   return cardItems.some(obj => +obj.id === +id);
+  }
 
-      {/* CONTENT */}
-      <Routes>
-        <Route
-          path='/'
-          element={
-            <Home
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              items={items}
-              onAddToFavorite={onAddToFavorite}
-              onChangeSearchInput={onChangeSearchInput}
-              handleLCick={handleLCick}
-            />
-          }
-        />
-        <Route
-          path='/favorites'
-          element={
-            <Favorites
-              items={favorites}
-              cardItems={cardItems}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              onChangeSearchInput={onChangeSearchInput}
-              onAddToFavorite={onAddToFavorite}
-            />
-          }
-        />
-      </Routes>
-      {/* FOOTER */}
-      <Footer />
-    </div>
+
+  return (
+    <AppContext.Provider value={{ items, cardItems, favorites, isItemAdded }}>
+      <div className='wrapper'>
+        {/* BEAN */}
+        {cardOpened && (
+          <Drawer
+            items={cardItems}
+            onClickRemove={() => setCardOpened(false)}
+            onRemove={removeItem}
+          />
+        )}
+        {/* HEADER  */}
+        <Header onClickAdd={() => setCardOpened(true)} />
+
+        {/* CONTENT */}
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <Home
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                items={items}
+                onAddToFavorite={onAddToFavorite}
+                onChangeSearchInput={onChangeSearchInput}
+                handleLCick={handleLCick}
+                isLoading={!items.length}
+              />
+            }
+          />
+          <Route
+            path='/favorites'
+            element={
+              <Favorites
+                items={favorites}
+                cardItems={cardItems}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                onChangeSearchInput={onChangeSearchInput}
+                onAddToFavorite={onAddToFavorite}
+              />
+            }
+          />
+        </Routes>
+        {/* FOOTER */}
+        <Footer />
+      </div>
+    </AppContext.Provider>
   );
 }

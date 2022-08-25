@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './home.scss';
 import Card from '../components/Card';
 
@@ -9,26 +9,29 @@ export default function Home({
   onAddToFavorite,
   handleLCick,
   onChangeSearchInput,
-  cardItems,
-  added,
+  isLoading,
 }) {
+  
+
+
   const renderItems = () => {
-    return items
-      ?.filter(item =>
-        item.name.toLowerCase().includes(searchValue.toLowerCase())
-      )
-      .map(item => (
-        <Card
-          key={item.id}
-          name={item.name}
-          imgUrl={item.img}
-          price={item.price}
-          added={cardItems?.some(obj => +obj.id === +item.id)}
-          onFavorite={obj => onAddToFavorite(obj)}
-          onClickPlus={obj => handleLCick(obj)}
-          loading={false}
-        />
-      ));
+    const filtredItems = items?.filter(item =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return (
+      isLoading ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : filtredItems
+    ).map(item => (
+      <Card
+        key={item.id}
+        name={item.name}
+        imgUrl={item.img}
+        price={item.price}
+        //added={isItemAdded( item.id)}
+        onFavorite={obj => onAddToFavorite(obj)}
+        onClickPlus={obj => handleLCick(obj)}
+        loading={isLoading}
+      />
+    ));
   };
   return (
     <div className='content'>
