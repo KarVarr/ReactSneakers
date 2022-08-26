@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.scss';
 import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
@@ -8,7 +8,6 @@ import Drawer from './components/Drawer';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import AppContext from './context';
-
 
 export default function App() {
   const [items, setItems] = useState([]);
@@ -93,13 +92,21 @@ export default function App() {
     setSearchValue(e.target.value);
   };
 
-  const isItemAdded = (id) => {
-   return cardItems.some(obj => +obj.id === +id);
-  }
-
+  const isItemAdded = id => {
+    return cardItems.some(obj => Number(obj.id) === Number(id));
+  };
 
   return (
-    <AppContext.Provider value={{ items, cardItems, favorites, isItemAdded }}>
+    <AppContext.Provider
+      value={{
+        items,
+        cardItems,
+        favorites,
+        isItemAdded,
+        setCardOpened,
+        setCardItmes,
+      }}
+    >
       <div className='wrapper'>
         {/* BEAN */}
         {cardOpened && (

@@ -11,16 +11,15 @@ export default function Card({
   onFavorite,
   onClickPlus,
   favorited = true,
-  //added = true,
+  added = true,
   loading = false,
 }) {
-  const { isItemAdded } = useContext(AppContext);
-  //const [isAdded, setIsAdded] = useState(added);
+  const [isAdded, setIsAdded] = useState(added);
   const [isFavorite, setIsFavorite] = useState(favorited);
 
   const hendlePlus = () => {
     onClickPlus({ id, price, imgUrl, name });
-    //setIsAdded(!isAdded);
+    setIsAdded(!isAdded);
   };
 
   const onClickFavorite = () => {
@@ -65,7 +64,7 @@ export default function Card({
 
             <img
               onClick={hendlePlus}
-              src={isItemAdded(id) ? '/img/plus_done.svg' : '/img/plus.svg'}
+              src={isAdded ? '/img/plus.svg' : '/img/plus_done.svg'}
               alt='plus'
             />
           </div>

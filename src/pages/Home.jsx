@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import './home.scss';
 import Card from '../components/Card';
+import AppContext from '../context';
 
 export default function Home({
   searchValue,
@@ -11,8 +12,7 @@ export default function Home({
   onChangeSearchInput,
   isLoading,
 }) {
-  
-
+  //const {isItemAdded} = useContext(AppContext)
 
   const renderItems = () => {
     const filtredItems = items?.filter(item =>
@@ -26,7 +26,7 @@ export default function Home({
         name={item.name}
         imgUrl={item.img}
         price={item.price}
-        //added={isItemAdded( item.id)}
+        //added={isItemAdded(item && item.id)}
         onFavorite={obj => onAddToFavorite(obj)}
         onClickPlus={obj => handleLCick(obj)}
         loading={isLoading}

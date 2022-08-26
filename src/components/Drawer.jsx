@@ -1,6 +1,30 @@
+import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import AppContext from '../context';
 import './drawer.scss';
+import Info from './Info';
 
 export default function Drawer({ onClickRemove, items = [], onRemove }) {
+  const { cartItems, setCardItmes } = useContext(AppContext);
+  const [orderId, setOrderId] = useState(null);
+  const [isOrderComplete, setIsOrderComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const onClickOrder = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post(
+        'https://62fe734fa85c52ee4837d620.mockapi.io/orders',
+        cartItems
+      );
+      axios.put('https://62fe734fa85c52ee4837d620.mockapi.io/cart', []);
+      setOrderId(data.id);
+      setIsOrderComplete(true);
+      setCardItmes([]);
+    } catch (error) {
+      alert('Не удалось создать заказ!');
+    }
+    setIsLoading(false);
+  };
   return (
     <div className='overlay'>
       <div className='drawer'>
@@ -18,7 +42,7 @@ export default function Drawer({ onClickRemove, items = [], onRemove }) {
             <div className='items__flex'>
               <div className='items__flex--top'>
                 {/* SNEAKERS */}
-                {items.map((obj) => (
+                {items.map(obj => (
                   <div key={obj.id} className='cart__item'>
                     <div className='item__img'>
                       <img
@@ -55,31 +79,27 @@ export default function Drawer({ onClickRemove, items = [], onRemove }) {
                     <b>1074 руб. </b>
                   </li>
                 </ul>
-                <button className='greenButton'>
+                <button
+                  disabled={isLoading}
+                  onClick={onClickOrder}
+                  className='greenButton'
+                >
                   Оформить заказ <img src='/img/arrow.svg' alt='arrow' />
                 </button>
               </div>
             </div>
           ) : (
-            <div className='empty'>
-              <div className='empty__img'>
-                <img width={120} height={120} src='/img/box.png' alt='bean' />
-              </div>
-              <div className='empty__text'>
-                <h3>Корзина пустая</h3>
-                <p>
-                  Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.
-                </p>
-              </div>
-              <div>
-                <button
-                  onClick={onClickRemove}
-                  className='greenButton empty__btn'
-                >
-                  <img src='/img/arrowBack.svg' alt='' /> Вернуться назад
-                </button>
-              </div>
-            </div>
+            <Info
+              title={isOrderComplete ? 'Заказ оформлен!' : 'Корзина пустая'}
+              description={
+                isOrderComplete
+                  ? `Ваш заказ #${orderId} скоро будет передан курьерской доставке`
+                  : 'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'
+              }
+              image={
+                isOrderComplete ? '/img/compliteOrder.png' : '/img/box.png'
+              }
+            />
           )}
         </div>
       </div>
