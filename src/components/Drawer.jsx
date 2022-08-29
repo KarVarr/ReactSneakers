@@ -1,20 +1,28 @@
 import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import AppContext from '../context';
+import React, { useState } from 'react';
+import { useCart } from '../hooks/useCart';
 import './drawer.scss';
 import Info from './Info';
 
-export default function Drawer({ onClickRemove, items = [], onRemove }) {
-  const { cartItems, setCardItmes } = useContext(AppContext);
+export default function Drawer({
+  onClickRemove,
+  items = [],
+  onRemove,
+  opened,
+}) {
+  const { cardItems, setCardItmes, totalPrice } = useCart();
   const [orderId, setOrderId] = useState(null);
   const [isOrderComplete, setIsOrderComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const discount = Math.floor((totalPrice / 100) * 5);
+
   const onClickOrder = async () => {
     try {
       setIsLoading(true);
       const { data } = await axios.post(
         'https://62fe734fa85c52ee4837d620.mockapi.io/orders',
-        cartItems
+        cardItems
       );
       axios.put('https://62fe734fa85c52ee4837d620.mockapi.io/cart', []);
       setOrderId(data.id);
@@ -69,14 +77,19 @@ export default function Drawer({ onClickRemove, items = [], onRemove }) {
               <div className='items__flex--bottom'>
                 <ul className='cart__totalBlock'>
                   <li>
-                    <span>Итого: </span>
+                    <span>Сумма: </span>
                     <div></div>
-                    <b>21 498 руб. </b>
+                    <b>{totalPrice} руб. </b>
                   </li>
                   <li>
-                    <span>Налог 5%: </span>
+                    <span>Скидка 5% : </span>
                     <div></div>
-                    <b>1074 руб. </b>
+                    <b>{discount} руб. </b>
+                  </li>
+                  <li>
+                    <span>Итого: </span>
+                    <div></div>
+                    <b>{totalPrice - discount} руб. </b>
                   </li>
                 </ul>
                 <button

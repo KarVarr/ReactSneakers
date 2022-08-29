@@ -10,8 +10,9 @@ export default function Favorites({
   onChangeSearchInput,
   favorited,
   onAddToFavorite,
+  
 }) {
-  const { favorites } = useContext(AppContext);
+  const { favorites, handleLCick} = useContext(AppContext);
 
   return (
     <div className='content'>
@@ -49,6 +50,7 @@ export default function Favorites({
               key={item.id}
               favorited={false}
               onFavorite={onAddToFavorite}
+              onClickPlus={handleLCick}
               {...item}
             />
           ))}

@@ -26,7 +26,7 @@ export default function Home({
         name={item.name}
         imgUrl={item.img}
         price={item.price}
-        //added={isItemAdded(item && item.id)}
+       // added={isItemAdded(item && item.id)}
         onFavorite={obj => onAddToFavorite(obj)}
         onClickPlus={obj => handleLCick(obj)}
         loading={isLoading}

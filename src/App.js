@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
 import Home from './pages/Home';
+import Orders from './pages/Orders';
 import Favorites from './pages/Favorites';
 import AppContext from './context';
 
@@ -88,12 +89,12 @@ export default function App() {
       alert('Try again');
     }
   };
-  const onChangeSearchInput = e => {
+  const onChangeSearchInput = e => { 
     setSearchValue(e.target.value);
   };
 
-  const isItemAdded = id => {
-    return cardItems.some(obj => Number(obj.id) === Number(id));
+  const isItemAdded = price => {
+    return cardItems.some(obj => +obj.price === +price);
   };
 
   return (
@@ -105,6 +106,7 @@ export default function App() {
         isItemAdded,
         setCardOpened,
         setCardItmes,
+        handleLCick,
       }}
     >
       <div className='wrapper'>
@@ -139,6 +141,20 @@ export default function App() {
             path='/favorites'
             element={
               <Favorites
+                items={favorites}
+                cardItems={cardItems}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                onChangeSearchInput={onChangeSearchInput}
+                onAddToFavorite={onAddToFavorite}
+              />
+            }
+          />
+
+          <Route
+            path='/orders'
+            element={
+              <Orders
                 items={favorites}
                 cardItems={cardItems}
                 searchValue={searchValue}
