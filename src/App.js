@@ -89,7 +89,7 @@ export default function App() {
       alert('Try again');
     }
   };
-  const onChangeSearchInput = e => { 
+  const onChangeSearchInput = e => {
     setSearchValue(e.target.value);
   };
 
@@ -118,9 +118,10 @@ export default function App() {
             onRemove={removeItem}
           />
         )}
+
         {/* HEADER  */}
         <Header onClickAdd={() => setCardOpened(true)} />
-
+        <img className='headerImg' src="../img/stan.png" alt="stanImage" />
         {/* CONTENT */}
         <Routes>
           <Route
